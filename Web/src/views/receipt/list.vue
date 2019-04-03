@@ -1,13 +1,13 @@
 <template>
   <el-container>
     <el-header>
-      <headerView :setDateRange="setDateRange" />
+      <headerView :setDateRange="setDateRange" :setBankID="setBankID" :setReceiptTypeID="setReceiptTypeID" />
     </el-header>
     <el-main>
       <tableView :tableData="tableData" :tableRowClassName="tableRowClassName" />
     </el-main>
     <el-footer>
-      <pageView :handleSizeChange="handleSizeChange" :handleCurrentChange="handleCurrentChange" :total="total"/>
+      <pageView :handleSizeChange="handleSizeChange" :handleCurrentChange="handleCurrentChange" :total="total" :page="page"/>
     </el-footer>
   </el-container>
 </template>
@@ -17,7 +17,7 @@ import tableView from './components/table'
 import headerView from './components/header'
 import pageView from './components/page'
 import DateUtil from '@/utils/date'
-import bankAPI from '@/api/bank'
+import receiptAPI from '@/api/receipt'
 
 export default {
   components: {
@@ -26,16 +26,9 @@ export default {
     pageView
   },
   created () {
-    this.loadBank()
     this.loadData()
   },
   methods: {
-    // 加载银行信息
-    loadBank () {
-      bankAPI().then(res => {
-        console.log(res)
-      })
-    },
     setDateRange (val) {
       this.startDate = ''
       this.endDate = ''
@@ -49,6 +42,31 @@ export default {
       this.total = 0
       this.loadData()
     },
+    setReceiptTypeID (val) {
+      if (val.length < 2) {
+        val = val[0]
+      } else {
+        val = val[1]
+      }
+      if (val === '') {
+        this.receiptTypeID = 0
+      } else {
+        this.receiptTypeID = val
+      }
+      this.page = 1
+      this.total = 0
+      this.loadData() // 重新加载数据
+    },
+    setBankID (val) {
+      if (val === '') {
+        this.bankID = 0
+      } else {
+        this.bankID = val
+      }
+      this.page = 1
+      this.total = 0
+      this.loadData() // 重新加载数据
+    },
     handleSizeChange (val) {
       this.pageSize = val
       this.loadData()
@@ -58,56 +76,51 @@ export default {
       this.loadData()
     },
     tableRowClassName ({row, rowIndex}) {
-      if (rowIndex % 2 === 1) {
+      if (row.amount >= 0) {
         return 'input-row'
-      } else if (rowIndex % 3 === 1) {
+      } else {
         return 'out-row'
       }
-      return ''
     },
     loadData () {
       var path = this.$route.path
       var listType = Number(path.replace('/receipt/list/', ''))
-      console.log(this.startDate + ' - ' + this.endDate)
-      console.log('加载数据' + listType + '第' + this.page + '页,' + this.pageSize)
-      if (listType === 1) {
-        var item = {
-          billNo: 'S000000007003',
-          tp: '泓旭',
-          amount: 20000.8,
-          amountType: '人民币',
-          userName: '丁丽丽',
-          date: '2019-03-28 16:02:52',
-          bank: '支付宝',
-          desc: '备注呵呵呵'
-        }
-        this.tableData = Array(121).fill(item)
-      } else if (listType === 2) {
-        item = {
-          billNo: 'S000000008003',
-          tp: '物业',
-          amount: 109483,
-          amountType: '人民币',
-          userName: '丁丽丽',
-          date: '2019-01-18 10:02:52',
-          bank: '老板娘',
-          desc: '备注呵呵呵'
-        }
-        this.tableData = Array(79).fill(item)
-      } else {
-        item = {
-          billNo: 'S000000008803',
-          tp: '货款',
-          amount: 4839.1,
-          amountType: '人民币',
-          userName: '丁丽丽',
-          date: '2019-02-08 7:02:52',
-          bank: '微信',
-          desc: '备注呵呵呵'
-        }
-        this.tableData = Array(200).fill(item)
+      if (this.tpValue !== listType) {
+        this.page = 1
       }
-      this.total = this.tableData.length
+      this.tpValue = listType
+      var reqData = {
+        'StartTime': this.startDate,
+        'EndTime': this.endDate,
+        'BankID': Number(this.bankID),
+        'ReceiptType': Number(this.receiptTypeID),
+        'BillType': Number(listType)
+      }
+      var params = {
+        'page': this.page,
+        'pageSize': this.pageSize
+      }
+      receiptAPI.List(reqData, params).then(res => {
+        if (res.code === 0) {
+          this.total = res.page.total
+          this.tableData = []
+          for (var v in res.data.Data) {
+            var item = res.data.Data[v]
+            this.tableData.push({
+              billNo: item.Id,
+              tp: item.Type,
+              amount: item.Money,
+              amountType: item.MoneyType,
+              userName: item.Operator,
+              date: item.Createtime,
+              bank: item.Bank,
+              desc: item.Description
+            })
+          }
+        } else {
+          console.log(res.errmsg)
+        }
+      })
     }
   },
   watch: {
@@ -118,11 +131,14 @@ export default {
   data () {
     return {
       page: 1,
-      pageSize: 10,
-      total: 100,
+      pageSize: 50,
+      total: 0,
       tableData: [],
       startDate: '',
-      endDate: ''
+      endDate: '',
+      bankID: '',
+      receiptTypeID: '',
+      tpValue: 0
     }
   }
 }

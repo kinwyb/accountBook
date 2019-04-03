@@ -1,0 +1,28 @@
+package web
+
+import (
+	"accountBook/application/web/controllers"
+	"accountBook/models/endpoints/web"
+)
+
+// 收支类型相关接口
+type ReceiptTypeController struct {
+	controllers.RestController
+	Serv web.IReceiptTypeEndpoint
+}
+
+// @Title 收支类型列表
+// @Description 收支类型列表
+// @Param token header string true Token
+// @Param parentID query string false 父级ID
+// @Success 200 {array} dbBeans.ReceiptType
+// @router /list [get]
+func (b *ReceiptTypeController) List() {
+	parent, _ := b.GetInt64("parentID", -1)
+	ret, err := b.Serv.List(parent, b.OCtx)
+	if err != nil {
+		b.RespError(err)
+		return
+	}
+	b.ResponseSUCC(ret)
+}

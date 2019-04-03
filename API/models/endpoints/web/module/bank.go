@@ -10,11 +10,11 @@ import (
 	"github.com/kinwyb/go/err1"
 )
 
-var Bank web.IBankEndpoint = &bank{}
+var Bank web.IBankEndpoint = &bankEp{}
 
-type bank struct{}
+type bankEp struct{}
 
-func (bank) List(ctx *beans.Context) ([]*dbBeans.Bank, err1.Error) {
+func (bankEp) List(ctx *beans.Context) ([]*dbBeans.Bank, err1.Error) {
 	defer ctx.Start("ep.BankList").Finish()
 	if err := endpoints.CheckPower("BankList", ctx.Child()); err != nil {
 		return nil, err

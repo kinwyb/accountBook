@@ -23,7 +23,18 @@ func webRouter() {
 	bank := &web.BankController{
 		Serv: module.Bank,
 	}
+	// 银行
 	beego.Router("/v1/web/bank/list", bank, "GET:List")
+	// 收支类型
+	receiptType := &web.ReceiptTypeController{
+		Serv: module.ReceiptType,
+	}
+	beego.Router("/v1/web/receiptType/list", receiptType, "GET:List")
+	// 收支明细
+	receipt := &web.ReceiptController{
+		Serv: module.Receipt,
+	}
+	beego.Router("/v1/web/receipt/list", receipt, "POST:List")
 }
 
 //首页控制器
