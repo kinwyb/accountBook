@@ -4,7 +4,8 @@ type ReceiptListReq struct {
 	StartTime   string `description:"起始时间"`
 	EndTime     string `description:"结束时间"`
 	BankID      int64  `description:"银行ID"`
-	ReceiptType int64  `description:"收支类型ID"`
+	ShopID      int64  `description:"店铺ID"`
+	ReceiptType string `description:"收支类型ID"`
 	Search      string `description:"搜索"`
 	BillType    int64  `description:"单据类型"`
 }
@@ -20,6 +21,7 @@ type Receipt struct {
 	Description string  `description:"备注"`
 	Createtime  string  `description:"生成时间"`
 	Operator    string  `description:"操作者"`
+	Shop        string  `description:"店铺"`
 	Type        string  `description:"单据类型"`
 	MoneyType   string  `description:"货币类型"`
 }

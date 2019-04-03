@@ -6,6 +6,7 @@ import (
 	"accountBook/models/beans/dbBeans"
 	"accountBook/models/dataBase"
 	"fmt"
+	"strings"
 
 	"github.com/kinwyb/go/db"
 )
@@ -13,7 +14,37 @@ import (
 // 收支列表
 func ReceiptList(req *customer.ReceiptListReq, pg *db.PageObj, ctx *beans.Context) *customer.ReceiptListResp {
 	defer ctx.Start("sev.ReceiptList").Finish()
-	ret := &customer.ReceiptListResp{}
+	if req.ShopID > 0 {
+		rShop := dataBase.ReceiptTypeQueryByID(req.ShopID, ctx.Child())
+		if rShop == nil { //没有这个选择
+			return nil
+		}
+		if req.ReceiptType != "" {
+			rType := dataBase.ReceiptTypeQueryByParentIDAndName(rShop.Id, req.ReceiptType, ctx.Child())
+			if rType == nil {
+				return nil
+			}
+			req.ReceiptType = fmt.Sprintf("%d", rType.Id)
+		} else {
+			rTypes := dataBase.ReceiptTypeList(rShop.Id, ctx.Child())
+			var rTypeArray []string
+			for _, v := range rTypes {
+				rTypeArray = append(rTypeArray, fmt.Sprintf("%d", v.Id))
+			}
+			rTypeArray = append(rTypeArray, fmt.Sprintf("%d", rShop.Id))
+			req.ReceiptType = strings.Join(rTypeArray, ",")
+		}
+	} else if req.ReceiptType != "" {
+		rTypes := dataBase.ReceiptTypeQueryByName(req.ReceiptType, ctx.Child())
+		if len(rTypes) < 1 {
+			return nil
+		}
+		var rTypeArray []string
+		for _, v := range rTypes {
+			rTypeArray = append(rTypeArray, fmt.Sprintf("%d", v.Id))
+		}
+		req.ReceiptType = strings.Join(rTypeArray, ",")
+	}
 	result := dataBase.ReceiptList(req, pg, ctx.Child())
 	bankList := dataBase.BankList(ctx.Child())
 	bankMap := map[int64]string{}
@@ -25,16 +56,19 @@ func ReceiptList(req *customer.ReceiptListReq, pg *db.PageObj, ctx *beans.Contex
 	for _, v := range receiptTypeList {
 		receiptTypeMap[v.Id] = v
 	}
+	ret := &customer.ReceiptListResp{}
 	for _, v := range result {
 		tp := receiptTypeMap[v.Type]
 		tpValue := ""
+		shopValue := ""
 		if tp != nil {
 			tpValue = tp.Name
-			if tp.ParentId != 0 {
-				tpParent := receiptTypeMap[tp.ParentId]
-				if tpParent != nil {
-					tpValue = fmt.Sprintf("%s/%s", tpParent.Name, tp.Name)
-				}
+			tpParent := receiptTypeMap[tp.ParentId]
+			if tpParent != nil && tp.ParentId != 0 {
+				shopValue = tpParent.Name
+			} else { //没有父级,就表示直接是店铺
+				shopValue = tpValue
+				tpValue = ""
 			}
 		}
 		ret.Data = append(ret.Data, &customer.Receipt{
@@ -46,6 +80,7 @@ func ReceiptList(req *customer.ReceiptListReq, pg *db.PageObj, ctx *beans.Contex
 			Operator:    "丁丽丽",
 			MoneyType:   "人民币",
 			Type:        tpValue,
+			Shop:        shopValue,
 		})
 	}
 	return ret

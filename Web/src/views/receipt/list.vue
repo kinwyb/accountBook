@@ -1,7 +1,7 @@
 <template>
   <el-container>
-    <el-header>
-      <headerView :setDateRange="setDateRange" :setBankID="setBankID" :setReceiptTypeID="setReceiptTypeID" />
+    <el-header class="flex" height="auto" >
+      <headerView :setDateRange="setDateRange" :setBankID="setBankID" :setReceiptTypeID="setReceiptTypeID" :setShopID="setShopID" />
     </el-header>
     <el-main>
       <tableView :tableData="tableData" :tableRowClassName="tableRowClassName" />
@@ -48,10 +48,21 @@ export default {
       } else {
         val = val[1]
       }
-      if (val === '') {
-        this.receiptTypeID = 0
+      this.receiptType = val
+      this.page = 1
+      this.total = 0
+      this.loadData() // 重新加载数据
+    },
+    setShopID (val) {
+      if (val.length < 2) {
+        val = val[0]
       } else {
-        this.receiptTypeID = val
+        val = val[1]
+      }
+      if (val === '') {
+        this.shopID = 0
+      } else {
+        this.shopID = val
       }
       this.page = 1
       this.total = 0
@@ -93,7 +104,8 @@ export default {
         'StartTime': this.startDate,
         'EndTime': this.endDate,
         'BankID': Number(this.bankID),
-        'ReceiptType': Number(this.receiptTypeID),
+        'ShopID': Number(this.shopID),
+        'ReceiptType': this.receiptType,
         'BillType': Number(listType)
       }
       var params = {
@@ -114,7 +126,8 @@ export default {
               userName: item.Operator,
               date: item.Createtime,
               bank: item.Bank,
-              desc: item.Description
+              desc: item.Description,
+              shop: item.Shop
             })
           }
         } else {
@@ -137,7 +150,8 @@ export default {
       startDate: '',
       endDate: '',
       bankID: '',
-      receiptTypeID: '',
+      receiptType: '',
+      shopID: '',
       tpValue: 0
     }
   }

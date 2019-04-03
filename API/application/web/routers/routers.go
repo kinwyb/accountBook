@@ -30,6 +30,7 @@ func webRouter() {
 		Serv: module.ReceiptType,
 	}
 	beego.Router("/v1/web/receiptType/list", receiptType, "GET:List")
+	beego.Router("/v1/web/receiptType/list/level", receiptType, "GET:ListByLevel")
 	// 收支明细
 	receipt := &web.ReceiptController{
 		Serv: module.Receipt,

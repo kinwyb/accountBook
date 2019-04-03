@@ -1,10 +1,11 @@
 import api from '@/api/request.js'
 
-const List = function (data) {
+const List = function (data, params) {
   return api({
-    method: 'GET',
-    url: '/micro/index/data',
-    data: data
+    method: 'POST',
+    url: '/web/receipt/list',
+    data: data,
+    params: params
   })
 }
 

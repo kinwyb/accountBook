@@ -4,21 +4,19 @@ import (
 	"accountBook/models/beans"
 	"accountBook/models/beans/customer"
 	"accountBook/models/beans/dbBeans"
-	"strings"
+	"bytes"
 
 	"github.com/kinwyb/go/db"
+	"github.com/kinwyb/go/db/mysql"
 )
 
 // 收支列表
 func ReceiptList(req *customer.ReceiptListReq, pg *db.PageObj, ctx *beans.Context) []*dbBeans.Receipt {
 	defer ctx.Start("db.ReceiptList").Finish()
-	sqlString := strings.Builder{}
+	sqlString := bytes.NewBufferString("")
 	sqlString.WriteString(" 1=1 ")
 	var args []interface{}
-	if req.ReceiptType > 0 {
-		sqlString.WriteString(" AND `type` = ? ")
-		args = append(args, req.ReceiptType)
-	}
+	sqlString, args = mysql.WhereIN("AND `type`", req.ReceiptType, args, sqlString)
 	if req.BankID > 0 {
 		sqlString.WriteString(" AND `bank_id` = ? ")
 		args = append(args, req.BankID)

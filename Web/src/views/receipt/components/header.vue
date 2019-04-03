@@ -1,31 +1,49 @@
 <template>
-    <el-header>
-      <el-date-picker
-        v-model="dateRangeValue"
-        type="daterange"
-        align="right"
-        unlink-panels
-        range-separator="至"
-        start-placeholder="开始日期"
-        end-placeholder="结束日期"
-        :picker-options="pickerOptions" />
-      <el-button @click="resetArgs">重置时间</el-button>
-      <span>银行:</span>
-       <el-cascader placeholder="银行" :clearable=true @change="bankIDChange" :options="bankOptions" filterable />
-      <span>类型:</span>
-      <el-cascader placeholder="类型" :options="tpOptions" @change="setReceiptTypeID" @active-item-change="loadReceiptType" filterable />
-    </el-header>
+      <el-row>
+          <span class="search-col search-col--min">
+            <el-date-picker
+                    v-model="dateRangeValue"
+                    type="daterange"
+                    align="right"
+                    unlink-panels
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    :picker-options="pickerOptions" />
+                  <el-button @click="resetArgs">重置时间</el-button>
+          </span>
+          <span class="search-col search-col--min">
+            <span>银行:</span>
+            <el-cascader placeholder="银行" :clearable=true @change="bankIDChange" :options="bankOptions" filterable />
+          </span>
+          <span class="search-col search-col--min">
+            <span>店铺:</span>
+            <el-cascader placeholder="店铺" :options="shopOptions" :clearable=true @change="setShopID" />
+          </span>
+          <span class="search-col search-col--min" >
+            <span>类型:</span>
+            <el-cascader placeholder="类型" :options="tpOptions" :clearable=true @change="setReceiptTypeID" />
+          </span>
+      </el-row>
 </template>
+
+<style lang="less">
+.search-col{
+  float: left;
+  margin-left: 10px;
+}
+</style>
 
 <script>
 import bankAPI from '@/api/bank'
 import receiptTypeAPI from '@/api/receiptType'
 
 export default {
-  props: ['setDateRange', 'setBankID', 'setReceiptTypeID'],
+  props: ['setDateRange', 'setBankID', 'setReceiptTypeID', 'setShopID'],
   created () {
     this.loadBank()
-    this.loadReceiptType(0)
+    this.loadShop()
+    this.loadReceiptType()
   },
   methods: {
     // 加载银行信息
@@ -44,40 +62,33 @@ export default {
       })
     },
     // 加载收支类型
-    loadReceiptType (val) {
-      var tpMap = Array(0)
-      for (var v in this.tpOptions) {
-        tpMap[this.tpOptions[v].value] = this.tpOptions[v]
-      }
-      this.parentID = val.toString()
-      receiptTypeAPI.List({
-        parentID: val.toString()
+    loadReceiptType () {
+      receiptTypeAPI.ListByLevel({
+        level: 2
       }).then(res => {
-        if (val === 0) {
-          this.tpOptions = [{
-            value: 0,
-            label: '不限'
-          }]
-        } else {
-          tpMap[val].children = []
-        }
         if (res.code === 0) {
-          if (val !== 0 && res.data === null) {
-            tpMap[this.parentID].children = null
-          }
           for (var v in res.data) {
-            if (val === 0) {
-              this.tpOptions.push({
-                value: res.data[v].Id,
-                label: res.data[v].Name,
-                children: []
-              })
-            } else {
-              tpMap[this.parentID].children.push({
-                value: res.data[v].Id,
-                label: res.data[v].Name
-              })
-            }
+            this.tpOptions.push({
+              value: res.data[v].Name,
+              label: res.data[v].Name
+            })
+          }
+        } else {
+          console.log(res.errmsg)
+        }
+      })
+    },
+    // 加载店铺类型
+    loadShop () {
+      receiptTypeAPI.ListByLevel({
+        level: 0
+      }).then(res => {
+        if (res.code === 0) {
+          for (var v in res.data) {
+            this.shopOptions.push({
+              value: res.data[v].Id,
+              label: res.data[v].Name
+            })
           }
         } else {
           console.log(res.errmsg)
@@ -149,7 +160,7 @@ export default {
       },
       tpOptions: [], // 收支单据类型
       bankOptions: [], // 银行列表数据
-      parentID: 0
+      shopOptions: [] // 店铺类型
     }
   }
 }

@@ -26,3 +26,19 @@ func (b *ReceiptTypeController) List() {
 	}
 	b.ResponseSUCC(ret)
 }
+
+// @Title 收支类型列表
+// @Description 收支类型列表
+// @Param token header string true Token
+// @Param level query int64 false 等级
+// @Success 200 {array} dbBeans.ReceiptType
+// @router /list/level [get]
+func (b *ReceiptTypeController) ListByLevel() {
+	level, _ := b.GetInt64("level", -1)
+	ret, err := b.Serv.ListByLevel(level, b.OCtx)
+	if err != nil {
+		b.RespError(err)
+		return
+	}
+	b.ResponseSUCC(ret)
+}
