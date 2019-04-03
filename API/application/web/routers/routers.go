@@ -6,14 +6,24 @@
 package routers
 
 import (
+	"accountBook/application/web/controllers/web"
+	"accountBook/models/endpoints/web/module"
+
 	"github.com/astaxie/beego"
 )
 
 func init() {
-	ns := beego.NewNamespace("/v1")
-	beego.AddNamespace(ns)
+	webRouter()
 	idx := &indexCtl{}
 	beego.Router("/", idx, "*:Index")
+}
+
+//webb后台
+func webRouter() {
+	bank := &web.BankController{
+		Serv: module.Bank,
+	}
+	beego.Router("/v1/web/bank/list", bank, "GET:List")
 }
 
 //首页控制器

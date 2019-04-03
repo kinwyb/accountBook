@@ -3,12 +3,10 @@ module accountBook
 go 1.12
 
 require (
-	code.aliyun.com/zhizaofang/zfgoutil v0.0.0-20190305060416-1ca8bcb9c5de
 	github.com/Shopify/sarama v1.21.0 // indirect
 	github.com/StackExchange/wmi v0.0.0-20181212234831-e0a55b97c705 // indirect
 	github.com/apache/thrift v0.12.0 // indirect
 	github.com/astaxie/beego v1.11.1
-	github.com/garyburd/redigo v1.6.0 // indirect
 	github.com/gin-gonic/gin v1.3.0
 	github.com/go-logfmt/logfmt v0.4.0 // indirect
 	github.com/go-ole/go-ole v1.2.4 // indirect

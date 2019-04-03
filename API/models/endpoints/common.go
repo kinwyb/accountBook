@@ -1,7 +1,7 @@
-package accountBookEndpoints
+package endpoints
 
 import (
-	"accountBook/accountBookModels/accountBookBeans"
+	"accountBook/models/beans"
 	"math"
 
 	"github.com/kinwyb/go/err1"
@@ -9,8 +9,9 @@ import (
 
 //检测权限
 //@param string fun 函数点
-func CheckPower(fun string, ctx *accountBookBeans.Context) err1.Error {
+func CheckPower(fun string, ctx *beans.Context) err1.Error {
 	// todo 检测权限
+	return nil
 }
 
 // pws所有全值集合

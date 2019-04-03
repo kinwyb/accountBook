@@ -1,11 +1,10 @@
 package main
 
 import (
-	"accountBook/accountBookModels/accountBookConfig"
 	"accountBook/application/web/controllers"
 	_ "accountBook/application/web/routers"
-
-	"code.aliyun.com/zhizaofang/zfgoutil"
+	"accountBook/models/beans"
+	"accountBook/models/config"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
@@ -19,7 +18,7 @@ func main() {
 	if beego.BConfig.RunMode != "dev" {
 		logpath := beego.AppConfig.DefaultString("log.path", "")
 		//设置日志
-		zfgoutil.SetLogPath(logpath)
+		beans.SetLogPath(logpath)
 		beego.BeeLogger.Reset()
 		beego.BConfig.Log.AccessLogs = true
 		//beego.BConfig.Log.AccessLogsFormat = "JSON_FORMAT"
@@ -28,7 +27,7 @@ func main() {
 			"{\"filename\":\""+logpath+"/request.log\",\"level\":7,\"maxlines\":0,\"maxsize\":0,\"daily\":true,\"maxdays\":10}")
 		beego.BeeLogger.EnableFuncCallDepth(true)
 	}
-	accountBookConfig.InitConfig(beego.AppConfig)
+	config.InitConfig(beego.AppConfig)
 	controllers.StartMetrics()
 	defer controllers.StopMetrics()
 	beego.Run()

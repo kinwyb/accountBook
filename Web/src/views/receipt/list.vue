@@ -17,6 +17,7 @@ import tableView from './components/table'
 import headerView from './components/header'
 import pageView from './components/page'
 import DateUtil from '@/utils/date'
+import bankAPI from '@/api/bank'
 
 export default {
   components: {
@@ -25,9 +26,16 @@ export default {
     pageView
   },
   created () {
+    this.loadBank()
     this.loadData()
   },
   methods: {
+    // 加载银行信息
+    loadBank () {
+      bankAPI().then(res => {
+        console.log(res)
+      })
+    },
     setDateRange (val) {
       this.startDate = ''
       this.endDate = ''

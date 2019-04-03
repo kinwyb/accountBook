@@ -1,4 +1,4 @@
-package accountBookBeans
+package beans
 
 var MetricsInfluxdb = "" //性能统计influxdb地址
 var MachineNo = ""       //机器编码

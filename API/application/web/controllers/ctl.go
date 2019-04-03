@@ -1,17 +1,14 @@
 package controllers
 
 import (
-	"accountBook/accountBookModels/accountBookBeans"
-
-	"code.aliyun.com/zhizaofang/zfgoutil"
-
+	"accountBook/models/beans"
 	"time"
 
 	"github.com/astaxie/beego"
 	"github.com/gin-gonic/gin/json"
 	"github.com/kinwyb/go/db"
 	"github.com/kinwyb/go/err1"
-	metrics "github.com/rcrowley/go-metrics"
+	"github.com/rcrowley/go-metrics"
 )
 
 var (
@@ -33,15 +30,14 @@ type RestController struct {
 	beego.Controller
 	st   time.Time
 	resp *RespObj
-	OCtx *accountBookBeans.Context
+	OCtx *beans.Context
 }
 
 func (ctl *RestController) Prepare() {
 	ctl.resp = &RespObj{}
-	ctl.OCtx = accountBookBeans.NewContextWithTracing(
-		zfgoutil.NewTracingSpanExtractHttpRequest(ctl.Ctx.Request))
+	ctl.OCtx = beans.NewContextWithTracing(
+		beans.NewTracingSpanExtractHttpRequest(ctl.Ctx.Request))
 	ctl.OCtx.Token = ctl.Ctx.Input.Header("token")
-	ctl.OCtx.Query = zfgoutil.GetDBConnect()
 	ctl.st = time.Now()
 }
 

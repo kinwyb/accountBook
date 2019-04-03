@@ -1,13 +1,12 @@
-package accountBookConfig
+package config
 
 import (
+	"accountBook/models/beans"
 	"fmt"
 	"net"
 	"net/http"
 	"net/url"
 	"time"
-
-	"code.aliyun.com/zhizaofang/zfgoutil"
 
 	"github.com/opentracing/opentracing-go"
 	zipkin "github.com/openzipkin/zipkin-go-opentracing"
@@ -58,7 +57,7 @@ func startZipkinServer(zipkinURL string) {
 	collector, err := zipkin.NewHTTPCollector(zipkinURL, zipkin.HTTPTimeout(1*time.Minute))
 	if err != nil {
 		log.Error("unable to create Zipkin HTTP collector: %+v\n", err)
-		zfgoutil.Tracing = false
+		beans.Tracing = false
 		return
 	}
 
@@ -73,7 +72,7 @@ func startZipkinServer(zipkinURL string) {
 	)
 	if err != nil {
 		log.Error("unable to create Zipkin tracer: %+v\n", err)
-		zfgoutil.Tracing = false
+		beans.Tracing = false
 		return
 	}
 	// Explicitly set our tracer to be the default tracer.

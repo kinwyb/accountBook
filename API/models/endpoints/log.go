@@ -1,4 +1,4 @@
-package controllers
+package endpoints
 
 import (
 	"accountBook/models/beans"

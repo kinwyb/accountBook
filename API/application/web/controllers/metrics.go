@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"accountBook/accountBookModels/accountBookBeans"
+	"accountBook/models/beans"
 	"context"
 	"fmt"
 	"net"
@@ -25,8 +25,8 @@ var metricsCancel context.CancelFunc
 
 //开启性能统计
 func StartMetrics() {
-	if accountBookBeans.MetricsInfluxdb == "" ||
-		accountBookBeans.MachineNo == "" { //时序数据库地址错误不启动
+	if beans.MetricsInfluxdb == "" ||
+		beans.MachineNo == "" { //时序数据库地址错误不启动
 		return
 	}
 	enableMetrics = true
@@ -37,9 +37,9 @@ func StartMetrics() {
 	metrics.RegisterRuntimeMemStats(metricsRegistry)
 	go metrics.CaptureDebugGCStats(metricsRegistry, time.Second*5)
 	go metrics.CaptureRuntimeMemStats(metricsRegistry, time.Second*5)
-	go influxdb.InfluxDB(metricsRegistry, time.Second, accountBookBeans.MetricsInfluxdb,
-		"factoryshop_"+accountBookBeans.MachineNo+
-			"_"+accountBookBeans.RunMode, "", "")
+	go influxdb.InfluxDB(metricsRegistry, time.Second, beans.MetricsInfluxdb,
+		"factoryshop_"+beans.MachineNo+
+			"_"+beans.RunMode, "", "")
 	ctx := context.Background()
 	ctx, metricsCancel = context.WithCancel(ctx)
 	go runInfo(metricsRegistry, time.Second*5, ctx) //运行时执行的数据
