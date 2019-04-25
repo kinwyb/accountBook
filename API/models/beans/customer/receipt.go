@@ -25,3 +25,11 @@ type Receipt struct {
 	Type        string  `description:"单据类型"`
 	MoneyType   string  `description:"货币类型"`
 }
+
+// 指定结束时间点金额
+type ReceiptEndTimeMoneyCount struct {
+	EndTime   string  `description:"结束时间"`
+	BankID    int64   `description:"银行ID"`
+	MoneyType string  `description:"货币类型"`
+	Money     float64 `description:"金额"`
+}

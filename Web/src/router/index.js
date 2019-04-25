@@ -30,6 +30,16 @@ export default new Router({
         name: '支出列表',
         component: _import('receipt/list')
       }]
+    },
+    {
+      path: '/system',
+      name: '系统设置',
+      component: Layout,
+      children: [{
+        path: 'bank',
+        name: '银行列表',
+        component: _import('bank/list')
+      }]
     }
   ]
 })

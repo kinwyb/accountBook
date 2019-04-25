@@ -85,3 +85,9 @@ func ReceiptList(req *customer.ReceiptListReq, pg *db.PageObj, ctx *beans.Contex
 	}
 	return ret
 }
+
+// 时间范围内容金额统计
+func ReceiptEndTimeMoneyCount(endTime string, ctx *beans.Context) []*dbBeans.Receipt {
+	defer ctx.Start("sev.ReceiptTimeRangeMoneyCount").Finish()
+	return dataBase.ReceiptEndTimeMoneyCount(endTime, ctx.Child())
+}

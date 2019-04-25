@@ -8,6 +8,15 @@ const BankList = function (params) {
   })
 }
 
+const BankListCompate = function (params) {
+  return api({
+    method: 'GET',
+    url: '/web/bank/list/compute/day',
+    params: params
+  })
+}
+
 export default {
-  BankList
+  BankList,
+  BankListCompate
 }

@@ -5,6 +5,7 @@ import (
 	"accountBook/models/beans/customer"
 	"accountBook/models/beans/dbBeans"
 	"bytes"
+	"strings"
 
 	"github.com/kinwyb/go/db"
 	"github.com/kinwyb/go/db/mysql"
@@ -40,4 +41,28 @@ func ReceiptList(req *customer.ReceiptListReq, pg *db.PageObj, ctx *beans.Contex
 	}
 	sqlString.WriteString(" ORDER BY id DESC ")
 	return dbBeans.ReceiptGetPageList(sqlString.String(), ctx.Query, pg, args...)
+}
+
+// 时间范围内容金额统计
+func ReceiptEndTimeMoneyCount(endTime string, ctx *beans.Context) []*dbBeans.Receipt {
+	defer ctx.Start("db.ReceiptTimeRangeMoneyCount").Finish()
+	sqlString := strings.Builder{}
+	sqlString.WriteString("SELECT ")
+	sqlString.WriteString("`id`,SUM(money) money,`bank_id`,`description`,`createtime`,`lastmodify`,`operator`,`type`,`money_type`")
+	sqlString.WriteString(" FROM ")
+	sqlString.WriteString(dbBeans.TableReceipt)
+	var args []interface{}
+	if endTime != "" {
+		sqlString.WriteString(" WHERE createtime <= ? ")
+		args = append(args, endTime)
+	}
+	sqlString.WriteString(" GROUP BY bank_id,money_type ")
+	var ret []*dbBeans.Receipt
+	ctx.Query.QueryRows(sqlString.String(), args...).ForEach(func(m map[string]interface{}) bool {
+		r := &dbBeans.Receipt{}
+		r.SetMapValue(m)
+		ret = append(ret, r)
+		return true
+	})
+	return ret
 }

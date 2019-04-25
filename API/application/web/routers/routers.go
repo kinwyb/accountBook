@@ -25,6 +25,7 @@ func webRouter() {
 	}
 	// 银行
 	beego.Router("/v1/web/bank/list", bank, "GET:List")
+	beego.Router("/v1/web/bank/list/compute/day", bank, "GET:ListComputeWithDay")
 	// 收支类型
 	receiptType := &web.ReceiptTypeController{
 		Serv: module.ReceiptType,

@@ -24,3 +24,21 @@ func (b *BankController) List() {
 	}
 	b.ResponseSUCC(ret)
 }
+
+// @Title 银行按日期进行汇总计算
+// @Description 银行按日期进行汇总计算
+// @Param token header string true Token
+// @Param startTime query string false 起始时间
+// @Param endTime query string false 结束时间
+// @Success 200 {array} customer.BankListCompateResp
+// @router /list/compute/day [get]
+func (b *BankController) ListComputeWithDay() {
+	startTime := b.GetString("startTime")
+	endTime := b.GetString("endTime")
+	ret, err := b.Serv.ListComputeWithDay(startTime, endTime, b.OCtx)
+	if err != nil {
+		b.RespError(err)
+		return
+	}
+	b.ResponseSUCC(ret)
+}
