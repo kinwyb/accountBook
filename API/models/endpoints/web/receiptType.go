@@ -2,6 +2,7 @@ package web
 
 import (
 	"accountBook/models/beans"
+	"accountBook/models/beans/customer"
 	"accountBook/models/beans/dbBeans"
 
 	"github.com/kinwyb/go/err1"
@@ -24,4 +25,11 @@ type IReceiptTypeEndpoint interface {
 	// @Success 200 {array} dbBeans.ReceiptType
 	// @router /list/level [get]
 	ListByLevel(level int64, ctx *beans.Context) ([]*dbBeans.ReceiptType, err1.Error)
+
+	// @Title 收支类型树形结构
+	// @Description 收支类型树形结构
+	// @Param token header string true Token
+	// @Success 200 {array} customer.ReceiptTypeTree
+	// @router /tree [get]
+	Tree(ctx *beans.Context) ([]*customer.ReceiptTypeTree, err1.Error)
 }

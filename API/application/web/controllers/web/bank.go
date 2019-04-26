@@ -2,7 +2,9 @@ package web
 
 import (
 	"accountBook/application/web/controllers"
+	"accountBook/models/beans/dbBeans"
 	"accountBook/models/endpoints/web"
+	"encoding/json"
 )
 
 // 银行相关接口
@@ -41,4 +43,23 @@ func (b *BankController) ListComputeWithDay() {
 		return
 	}
 	b.ResponseSUCC(ret)
+}
+
+// @Title 新增银行信息
+// @Description 新增银行信息
+// @Param token header string true Token
+// @Param req body dbBeans.BankDB true 参数详情
+// @router /add [post]
+func (b *BankController) Add() {
+	var req dbBeans.BankDB
+	if err := json.Unmarshal(b.Ctx.Input.RequestBody, &req); err != nil {
+		b.ResponseError(-1, err.Error())
+		return
+	}
+	err := b.Serv.Add(&req, b.OCtx)
+	if err != nil {
+		b.RespError(err)
+		return
+	}
+	b.ResponseSUCC(controllers.Success)
 }

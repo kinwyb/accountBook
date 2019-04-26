@@ -24,4 +24,11 @@ type IBankEndpoint interface {
 	// @Success 200 {array} customer.BankListCompateResp
 	// @router /list/compute/day [get]
 	ListComputeWithDay(startTime string, endTime string, ctx *beans.Context) ([]*customer.BankListCompateResp, err1.Error)
+
+	// @Title 新增银行信息
+	// @Description 新增银行信息
+	// @Param token header string true Token
+	// @Param req body dbBeans.BankDB true 参数详情
+	// @router /add [post]
+	Add(req *dbBeans.BankDB, ctx *beans.Context) err1.Error
 }

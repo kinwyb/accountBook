@@ -12,7 +12,7 @@
                     end-placeholder="结束日期" />
         </span>
         <el-button type="primary" round @click="loadData" >刷新</el-button>
-        <el-button type="success">新增</el-button>
+        <el-button type="success" @click="dialogFormVisible = true" >新增</el-button>
     </el-header>
     <el-main>
       <el-table :data="tableData" style="width: 100%" height="70vh">
@@ -26,6 +26,34 @@
       <el-table-column prop="ContactPhone" label="联系电话" width="120"/>
     </el-table>
     </el-main>
+
+    <!-- Form -->
+    <el-dialog title="新增银行" :visible.sync="dialogFormVisible">
+      <el-form :model="form" label-width="120px" size="mini" >
+        <el-form-item label="名称">
+          <el-input v-model="form.BankName" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="账户">
+          <el-input v-model="form.BankAccount" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="联系人">
+          <el-input v-model="form.BankPeople" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="联系电话">
+          <el-input v-model="form.BankPhone" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="期初人民币">
+          <el-input v-model="form.BankMoney" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="期初美金">
+          <el-input v-model="form.BankMoneyUsa" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="formSubmit">确 定</el-button>
+      </div>
+    </el-dialog>
   </el-container>
 </template>
 
@@ -35,9 +63,35 @@ import DateUtil from '@/utils/date'
 
 export default {
   created () {
+    this.emptyForm = JSON.parse(JSON.stringify(this.form))
     this.loadData()
   },
   methods: {
+    formSubmit () {
+      this.form.BankMoney = parseFloat(this.form.BankMoney)
+      this.form.BankMoneyUsa = parseFloat(this.form.BankMoneyUsa)
+      bankAPI.BankAdd(this.form).then(res => {
+        if (res.code === 0) {
+          this.$notify({
+            title: res.data,
+            type: 'success'
+          })
+          console.log(this.emptyForm)
+          this.form = this.emptyForm
+        } else {
+          this.$alert(res.errmsg, '操作失败', {
+            confirmButtonText: '确定',
+            callback: action => {
+              this.$notify({
+                type: 'error',
+                message: `操作失败: ${res.errmsg}`
+              })
+            }
+          })
+        }
+      })
+      this.dialogFormVisible = false
+    },
     setDateRange (val) {
       this.startDate = ''
       this.endDate = ''
@@ -77,7 +131,17 @@ export default {
       dateRangeValue: '',
       tableData: [],
       startDate: '',
-      endDate: ''
+      endDate: '',
+      form: {
+        BankName: '',
+        BankAccount: '',
+        BankPhone: '',
+        BankPeople: '',
+        BankMoney: 0.0,
+        BankMoneyUsa: 0.0
+      },
+      emptyForm: {},
+      dialogFormVisible: false
     }
   }
 }

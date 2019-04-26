@@ -24,6 +24,7 @@ func webRouter() {
 		Serv: module.Bank,
 	}
 	// 银行
+	beego.Router("/v1/web/bank/add", bank, "POST:Add")
 	beego.Router("/v1/web/bank/list", bank, "GET:List")
 	beego.Router("/v1/web/bank/list/compute/day", bank, "GET:ListComputeWithDay")
 	// 收支类型
@@ -32,6 +33,7 @@ func webRouter() {
 	}
 	beego.Router("/v1/web/receiptType/list", receiptType, "GET:List")
 	beego.Router("/v1/web/receiptType/list/level", receiptType, "GET:ListByLevel")
+	beego.Router("/v1/web/receiptType/tree", receiptType, "GET:Tree")
 	// 收支明细
 	receipt := &web.ReceiptController{
 		Serv: module.Receipt,

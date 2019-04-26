@@ -19,8 +19,16 @@ var Bank web.IBankEndpoint = &bankEp{}
 
 type bankEp struct{}
 
+func (bankEp) Add(req *dbBeans.BankDB, ctx *beans.Context) err1.Error {
+	defer ctx.Start("ep.BankAdd").Finish()
+	if err := endpoints.CheckPower("BankAdd", ctx.Child()); err != nil {
+		return err
+	}
+	return service.BankAdd(req, ctx.Child())
+}
+
 func (bankEp) ListComputeWithDay(startTime string, endTime string, ctx *beans.Context) ([]*customer.BankListCompateResp, err1.Error) {
-	defer ctx.Start("ep.ListComputeWithDay").Finish()
+	defer ctx.Start("ep.BankListComputeWithDay").Finish()
 	if err := endpoints.CheckPower("ListComputeWithDay", ctx.Child()); err != nil {
 		return nil, err
 	}

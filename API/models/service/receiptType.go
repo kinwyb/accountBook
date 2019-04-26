@@ -2,6 +2,7 @@ package service
 
 import (
 	"accountBook/models/beans"
+	"accountBook/models/beans/customer"
 	"accountBook/models/beans/dbBeans"
 	"accountBook/models/dataBase"
 )
@@ -24,4 +25,39 @@ func ReceiptListByLevel(level int64, ctx *beans.Context) []*dbBeans.ReceiptType 
 		level = 0
 	}
 	return dataBase.ReceiptTypeListByLevel(level, ctx.Child())
+}
+
+// 收支类型树形结构
+func ReceiptTypeTree(ctx *beans.Context) []*customer.ReceiptTypeTree {
+	defer ctx.Start("sev.ReceiptTypeTree").Finish()
+	all := dataBase.ReceiptTypeListAll(ctx.Child())
+	receiptTreeMap := map[int64]*customer.ReceiptTypeTree{}
+	var ret []*customer.ReceiptTypeTree
+	for _, v := range all {
+		if x, ok := receiptTreeMap[v.Id]; ok {
+			x.ID = v.Id
+			x.Name = v.Name
+		} else {
+			r := &customer.ReceiptTypeTree{
+				ID:   v.Id,
+				Name: v.Name,
+			}
+			receiptTreeMap[v.Id] = r
+		}
+		if v.ParentId < 1 {
+			ret = append(ret, receiptTreeMap[v.Id])
+		}
+		if v.ParentId > 0 {
+			if x, ok := receiptTreeMap[v.ParentId]; ok {
+				x.Children = append(x.Children, receiptTreeMap[v.Id])
+			} else {
+				receiptTreeMap[v.ParentId] = &customer.ReceiptTypeTree{
+					Children: []*customer.ReceiptTypeTree{
+						receiptTreeMap[v.Id],
+					},
+				}
+			}
+		}
+	}
+	return ret
 }

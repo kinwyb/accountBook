@@ -42,3 +42,17 @@ func (b *ReceiptTypeController) ListByLevel() {
 	}
 	b.ResponseSUCC(ret)
 }
+
+// @Title 收支类型树形结构
+// @Description 收支类型树形结构
+// @Param token header string true Token
+// @Success 200 {array} customer.ReceiptTypeTree
+// @router /tree [get]
+func (b *ReceiptTypeController) Tree() {
+	ret, err := b.Serv.Tree(b.OCtx)
+	if err != nil {
+		b.RespError(err)
+		return
+	}
+	b.ResponseSUCC(ret)
+}
