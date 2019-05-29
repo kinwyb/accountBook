@@ -32,6 +32,17 @@ export default new Router({
       }]
     },
     {
+      path: '/saleBill',
+      name: '销售单',
+      component: Layout,
+      redirect: '/saleBill/list',
+      children: [{
+        path: 'list',
+        name: '列表',
+        component: _import('saleBill/list')
+      }]
+    },
+    {
       path: '/system',
       name: '系统设置',
       component: Layout,

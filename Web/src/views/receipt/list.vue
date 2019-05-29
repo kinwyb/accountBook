@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <el-header class="flex" height="auto" >
-      <headerView :setDateRange="setDateRange" :setBankID="setBankID" :setReceiptTypeID="setReceiptTypeID" :setShopID="setShopID" />
+      <headerView :setDateRange="setDateRange" :setBankID="setBankID" :setReceiptTypeID="setReceiptTypeID" :setShopID="setShopID"  :showAdd="showAdd"/>
     </el-header>
     <el-main>
       <tableView :tableData="tableData" :tableRowClassName="tableRowClassName" />
@@ -9,6 +9,35 @@
     <el-footer>
       <pageView :handleSizeChange="handleSizeChange" :handleCurrentChange="handleCurrentChange" :total="total" :page="page"/>
     </el-footer>
+
+    <!-- Form -->
+    <el-dialog title="新增单据" :visible.sync="dialogFormVisible">
+      <!-- <el-form :model="form" label-width="120px" size="mini" >
+        <el-form-item label="名称">
+          <el-input v-model="form.BankName" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="账户">
+          <el-input v-model="form.BankAccount" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="联系人">
+          <el-input v-model="form.BankPeople" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="联系电话">
+          <el-input v-model="form.BankPhone" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="期初人民币">
+          <el-input v-model="form.BankMoney" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="期初美金">
+          <el-input v-model="form.BankMoneyUsa" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form> -->
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <!-- <el-button type="primary" @click="formSubmit">确 定</el-button> -->
+      </div>
+    </el-dialog>
+
   </el-container>
 </template>
 
@@ -29,6 +58,9 @@ export default {
     this.loadData()
   },
   methods: {
+    showAdd (val) {
+      this.dialogFormVisible = true
+    },
     setDateRange (val) {
       this.startDate = ''
       this.endDate = ''
@@ -152,7 +184,8 @@ export default {
       bankID: '',
       receiptType: '',
       shopID: '',
-      tpValue: 0
+      tpValue: 0,
+      dialogFormVisible: false
     }
   }
 }

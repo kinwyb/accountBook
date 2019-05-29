@@ -24,7 +24,11 @@
             <span>类型:</span>
             <el-cascader placeholder="类型" :options="tpOptions" :clearable=true @change="setReceiptTypeID" />
           </span>
+          <span>
+            <el-button type="success" @click="showAdd()" style="margin-left:20px" >新增</el-button>
+          </span>
       </el-row>
+
 </template>
 
 <style lang="less">
@@ -39,7 +43,7 @@ import bankAPI from '@/api/bank'
 import receiptTypeAPI from '@/api/receiptType'
 
 export default {
-  props: ['setDateRange', 'setBankID', 'setReceiptTypeID', 'setShopID'],
+  props: ['setDateRange', 'setBankID', 'setReceiptTypeID', 'setShopID', 'showAdd'],
   created () {
     this.loadBank()
     this.loadShop()

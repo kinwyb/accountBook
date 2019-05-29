@@ -16,7 +16,24 @@ const ListByLevel = function (params) {
   })
 }
 
+const Tree = function () {
+  return api({
+    method: 'GET',
+    url: '/web/receiptType/tree'
+  })
+}
+
+const Add = function (data) {
+  return api({
+    method: 'POST',
+    url: '/web/receiptType/add',
+    data: data
+  })
+}
+
 export default {
   List,
-  ListByLevel
+  ListByLevel,
+  Tree,
+  Add
 }
