@@ -1,5 +1,6 @@
 'use strict'
 module.exports = {
   NODE_ENV: '"production"',
-  API_URL: "http://baidu.com"
+  API_URL: '"/v1"',
+  Mock: false
 }

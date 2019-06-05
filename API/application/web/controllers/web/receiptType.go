@@ -2,7 +2,9 @@ package web
 
 import (
 	"accountBook/application/web/controllers"
+	"accountBook/models/beans/dbBeans"
 	"accountBook/models/endpoints/web"
+	"encoding/json"
 )
 
 // 收支类型相关接口
@@ -55,4 +57,22 @@ func (b *ReceiptTypeController) Tree() {
 		return
 	}
 	b.ResponseSUCC(ret)
+}
+
+// @Title 新增
+func (b *ReceiptTypeController) Add() {
+	var req dbBeans.ReceiptTypeDB
+	e := json.Unmarshal(b.Ctx.Input.RequestBody, &req)
+	if e != nil {
+		b.LogError("dbBeans.ReceiptTypeDB请求内容:%s\n请求类型:%s",
+			b.Ctx.Input.RequestBody, b.Ctx.Request.Header.Get("content-type"))
+		b.RespError(controllers.ParamDecodeFail, e)
+		return
+	}
+	err := b.Serv.Add(&req, b.OCtx)
+	if err != nil {
+		b.RespError(err)
+		return
+	}
+	b.ResponseSUCC(controllers.Success)
 }

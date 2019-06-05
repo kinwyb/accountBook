@@ -6,5 +6,5 @@ const api_root = '"http://localhost:8080/v1"'
 module.exports = merge(prodEnv, {
   NODE_ENV: '"development"',
   API_URL: api_root,
-  Mock:true, //mock数据
+  Mock: true // mock数据
 })

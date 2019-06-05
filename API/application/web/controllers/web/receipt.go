@@ -3,6 +3,7 @@ package web
 import (
 	"accountBook/application/web/controllers"
 	"accountBook/models/beans/customer"
+	"accountBook/models/beans/dbBeans"
 	"accountBook/models/endpoints/web"
 	"encoding/json"
 
@@ -41,4 +42,28 @@ func (i *ReceiptController) List() {
 	}
 	i.Page(pg)
 	i.ResponseSUCC(ret)
+}
+
+// @Title 下一个单据号
+// @router /nextNo [get]
+func (i *ReceiptController) NextNo() {
+	ret := i.Serv.NextNo(i.OCtx)
+	i.ResponseSUCC(ret)
+}
+
+// @Title 新增收支单据
+func (i *ReceiptController) Add() {
+	var req dbBeans.ReceiptDB
+	e := json.Unmarshal(i.Ctx.Input.RequestBody, &req)
+	if e != nil {
+		i.LogError("dbBeans.ReceiptDB请求内容:%s\n请求类型:%s", i.Ctx.Input.RequestBody, i.Ctx.Request.Header.Get("content-type"))
+		i.RespError(controllers.ParamDecodeFail, e)
+		return
+	}
+	err := i.Serv.Add(&req, i.OCtx)
+	if err != nil {
+		i.RespError(err)
+		return
+	}
+	i.ResponseSUCC(controllers.Success)
 }

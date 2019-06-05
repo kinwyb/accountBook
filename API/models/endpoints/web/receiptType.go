@@ -32,4 +32,7 @@ type IReceiptTypeEndpoint interface {
 	// @Success 200 {array} customer.ReceiptTypeTree
 	// @router /tree [get]
 	Tree(ctx *beans.Context) ([]*customer.ReceiptTypeTree, err1.Error)
+
+	// 收支类型列表
+	Add(req *dbBeans.ReceiptTypeDB, ctx *beans.Context) err1.Error
 }

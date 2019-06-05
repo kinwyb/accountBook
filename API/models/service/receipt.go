@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/kinwyb/go/err1"
+
 	"github.com/kinwyb/go/db"
 )
 
@@ -90,4 +92,20 @@ func ReceiptList(req *customer.ReceiptListReq, pg *db.PageObj, ctx *beans.Contex
 func ReceiptEndTimeMoneyCount(endTime string, ctx *beans.Context) []*dbBeans.Receipt {
 	defer ctx.Start("sev.ReceiptTimeRangeMoneyCount").Finish()
 	return dataBase.ReceiptEndTimeMoneyCount(endTime, ctx.Child())
+}
+
+// 下一个
+func ReceiptNextNo(ctx *beans.Context) string {
+	defer ctx.Start("sev.ReceiptLastID").Finish()
+	id := dataBase.ReceiptLastID(ctx.Child())
+	return fmt.Sprintf("SJ%07d", id+1)
+}
+
+// 新增收支单
+func ReceiptAdd(req *dbBeans.ReceiptDB, ctx *beans.Context) err1.Error {
+	defer ctx.Start("sev.ReceiptAdd").Finish()
+	req.Id = 0
+	req.Lastmodify = ""
+	req.Operator = 1
+	return dataBase.ReceiptAdd(req, ctx.Child())
 }

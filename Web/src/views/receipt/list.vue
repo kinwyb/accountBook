@@ -12,30 +12,7 @@
 
     <!-- Form -->
     <el-dialog title="新增单据" :visible.sync="dialogFormVisible">
-      <!-- <el-form :model="form" label-width="120px" size="mini" >
-        <el-form-item label="名称">
-          <el-input v-model="form.BankName" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="账户">
-          <el-input v-model="form.BankAccount" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="联系人">
-          <el-input v-model="form.BankPeople" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="联系电话">
-          <el-input v-model="form.BankPhone" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="期初人民币">
-          <el-input v-model="form.BankMoney" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="期初美金">
-          <el-input v-model="form.BankMoneyUsa" autocomplete="off"></el-input>
-        </el-form-item>
-      </el-form> -->
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <!-- <el-button type="primary" @click="formSubmit">确 定</el-button> -->
-      </div>
+      <addView :hideAdd="hideAdd" />
     </el-dialog>
 
   </el-container>
@@ -47,12 +24,14 @@ import headerView from './components/header'
 import pageView from './components/page'
 import DateUtil from '@/utils/date'
 import receiptAPI from '@/api/receipt'
+import addView from './components/add'
 
 export default {
   components: {
     headerView,
     tableView,
-    pageView
+    pageView,
+    addView
   },
   created () {
     this.loadData()
@@ -166,6 +145,9 @@ export default {
           console.log(res.errmsg)
         }
       })
+    },
+    hideAdd () {
+      this.dialogFormVisible = false
     }
   },
   watch: {

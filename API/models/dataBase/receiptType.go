@@ -4,6 +4,8 @@ import (
 	"accountBook/models/beans"
 	"accountBook/models/beans/dbBeans"
 	"strings"
+
+	"github.com/kinwyb/go/err1"
 )
 
 // 收支类型
@@ -53,4 +55,10 @@ func ReceiptTypeQueryByName(name string, ctx *beans.Context) []*dbBeans.ReceiptT
 func ReceiptTypeQueryByParentIDAndName(parentID int64, name string, ctx *beans.Context) *dbBeans.ReceiptType {
 	defer ctx.Start("db.ReceiptTypeQueryByParentIDAndName").Finish()
 	return dbBeans.ReceiptTypeGetOne(" parent_id = ? AND name = ? ", ctx.Query, parentID, name)
+}
+
+// 收支类型列表
+func ReceiptTypeAdd(req *dbBeans.ReceiptTypeDB, ctx *beans.Context) err1.Error {
+	defer ctx.Start("db.ReceiptTypeAdd").Finish()
+	return Insert(req, dbBeans.TableReceiptType, ctx.Query)
 }

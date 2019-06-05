@@ -38,3 +38,11 @@ func (receiptTypeEp) List(parentID int64, ctx *beans.Context) ([]*dbBeans.Receip
 	}
 	return service.ReceiptTypeList(parentID, ctx.Child()), nil
 }
+
+func (receiptTypeEp) Add(req *dbBeans.ReceiptTypeDB, ctx *beans.Context) err1.Error {
+	defer ctx.Start("ep.ReceiptTypeAdd").Finish()
+	if err := endpoints.CheckPower("ReceiptTypeAdd", ctx.Child()); err != nil {
+		return err
+	}
+	return service.ReceiptTypeAdd(req, ctx.Child())
+}

@@ -5,6 +5,8 @@ import (
 	"accountBook/models/beans/customer"
 	"accountBook/models/beans/dbBeans"
 	"accountBook/models/dataBase"
+
+	"github.com/kinwyb/go/err1"
 )
 
 // 收支类型
@@ -60,4 +62,10 @@ func ReceiptTypeTree(ctx *beans.Context) []*customer.ReceiptTypeTree {
 		}
 	}
 	return ret
+}
+
+// 收支类型列表
+func ReceiptTypeAdd(req *dbBeans.ReceiptTypeDB, ctx *beans.Context) err1.Error {
+	defer ctx.Start("sev.ReceiptTypeAdd").Finish()
+	return dataBase.ReceiptTypeAdd(req, ctx.Child())
 }

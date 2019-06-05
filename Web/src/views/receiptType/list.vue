@@ -59,31 +59,31 @@ export default {
         </span>)
     },
     formSubmit () {
-      // ReceiptTypeAPI.Add(this.form).then(res => {
-      //   if (res.code === 0) {
-      //     this.$notify({
-      //       title: res.data,
-      //       type: 'success'
-      //     })
-      //     console.log(this.emptyForm)
-      //     // const newChild = { id: id++, label: 'testtest', children: [] }
-      //     // if (!data.children) {
-      //     //   this.$set(data, 'children', [])
-      //     // }
-      //     // data.children.push(newChild)
-      //     this.form = this.emptyForm
-      //   } else {
-      //     this.$alert(res.errmsg, '操作失败', {
-      //       confirmButtonText: '确定',
-      //       callback: action => {
-      //         this.$notify({
-      //           type: 'error',
-      //           message: `操作失败: ${res.errmsg}`
-      //         })
-      //       }
-      //     })
-      //   }
-      // })
+      ReceiptTypeAPI.Add(this.form).then(res => {
+        if (res.code === 0) {
+          this.$notify({
+            title: res.data,
+            type: 'success'
+          })
+          console.log(this.emptyForm)
+          // const newChild = { id: id++, label: 'testtest', children: [] }
+          // if (!data.children) {
+          //   this.$set(data, 'children', [])
+          // }
+          // data.children.push(newChild)
+          this.form = this.emptyForm
+        } else {
+          this.$alert(res.errmsg, '操作失败', {
+            confirmButtonText: '确定',
+            callback: action => {
+              this.$notify({
+                type: 'error',
+                message: `操作失败: ${res.errmsg}`
+              })
+            }
+          })
+        }
+      })
       this.form = this.emptyForm
       this.dialogFormVisible = false
     },
@@ -104,7 +104,7 @@ export default {
     },
     append (data) {
       this.dialogFormVisible = true
-      this.form.ParentID = data.ID
+      this.form.ParentId = data.ID
       this.addTitle = '新增 [' + data.Name + '] 下级'
     }
   },
@@ -113,7 +113,7 @@ export default {
       addTitle: '',
       tableData: [],
       form: {
-        ParentID: 0,
+        ParentId: 0,
         Name: ''
       },
       emptyForm: {},

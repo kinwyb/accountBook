@@ -7,6 +7,8 @@ import (
 	"bytes"
 	"strings"
 
+	"github.com/kinwyb/go/err1"
+
 	"github.com/kinwyb/go/db"
 	"github.com/kinwyb/go/db/mysql"
 )
@@ -65,4 +67,20 @@ func ReceiptEndTimeMoneyCount(endTime string, ctx *beans.Context) []*dbBeans.Rec
 		return true
 	})
 	return ret
+}
+
+// 最后一个ID
+func ReceiptLastID(ctx *beans.Context) int64 {
+	defer ctx.Start("db.ReceiptLastID").Finish()
+	sqlBuilder := strings.Builder{}
+	sqlBuilder.WriteString("SELECT id FROM ")
+	sqlBuilder.WriteString(dbBeans.TableReceipt)
+	sqlBuilder.WriteString(" ORDER BY id DESC ")
+	return db.Int64Default(ctx.Query.QueryRow(sqlBuilder.String()).Get("id"))
+}
+
+// 新增收支单
+func ReceiptAdd(req *dbBeans.ReceiptDB, ctx *beans.Context) err1.Error {
+	defer ctx.Start("db.ReceiptAdd").Finish()
+	return Insert(req, dbBeans.TableReceipt, ctx.Query)
 }

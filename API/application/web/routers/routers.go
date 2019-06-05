@@ -34,11 +34,14 @@ func webRouter() {
 	beego.Router("/v1/web/receiptType/list", receiptType, "GET:List")
 	beego.Router("/v1/web/receiptType/list/level", receiptType, "GET:ListByLevel")
 	beego.Router("/v1/web/receiptType/tree", receiptType, "GET:Tree")
+	beego.Router("/v1/web/receiptType/add", receiptType, "POST:Add")
 	// 收支明细
 	receipt := &web.ReceiptController{
 		Serv: module.Receipt,
 	}
 	beego.Router("/v1/web/receipt/list", receipt, "POST:List")
+	beego.Router("/v1/web/receipt/add", receipt, "POST:Add")
+	beego.Router("/v1/web/receipt/nextNo", receipt, "GET:NextNo")
 }
 
 //首页控制器

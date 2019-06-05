@@ -4,5 +4,5 @@ const devEnv = require('./dev.env')
 
 module.exports = merge(devEnv, {
   NODE_ENV: '"testing"',
-  API_URL: "http://baidu.com"
+  API_URL: '"http://localhost:8182"'
 })
