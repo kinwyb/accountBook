@@ -4,7 +4,7 @@
       <headerView :setDateRange="setDateRange" :setBankID="setBankID" :setReceiptTypeID="setReceiptTypeID" :setShopID="setShopID"  :showAdd="showAdd"/>
     </el-header>
     <el-main>
-      <tableView :tableData="tableData" :tableRowClassName="tableRowClassName" />
+      <tableView :tableData="tableData" :countData="countData" :tableRowClassName="tableRowClassName" />
     </el-main>
     <el-footer>
       <pageView :handleSizeChange="handleSizeChange" :handleCurrentChange="handleCurrentChange" :total="total" :page="page"/>
@@ -141,6 +141,12 @@ export default {
               shop: item.Shop
             })
           }
+          if (res.data.Counts) {
+            this.countData = []
+            for (v in res.data.Counts) {
+              this.countData.push(res.data.Counts[v])
+            }
+          }
         } else {
           console.log(res.errmsg)
         }
@@ -161,6 +167,7 @@ export default {
       pageSize: 50,
       total: 0,
       tableData: [],
+      countData: [],
       startDate: '',
       endDate: '',
       bankID: '',
