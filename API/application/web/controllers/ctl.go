@@ -2,10 +2,15 @@ package controllers
 
 import (
 	"accountBook/models/beans"
+	"fmt"
 	"time"
+	"unsafe"
+
+	"github.com/modern-go/reflect2"
+
+	jsoniter "github.com/json-iterator/go"
 
 	"github.com/astaxie/beego"
-	"github.com/gin-gonic/gin/json"
 	"github.com/kinwyb/go/db"
 	"github.com/kinwyb/go/err1"
 	"github.com/rcrowley/go-metrics"
@@ -16,6 +21,13 @@ var (
 	ParamMissing    = err1.NewError(-1, "参数缺失")
 	ParamDecodeFail = err1.NewError(-1, "参数解析失败")
 )
+
+var json jsoniter.API
+
+func init() {
+	json = jsoniter.ConfigFastest
+	json.RegisterExtension(&extFloat64{})
+}
 
 type RespObj struct {
 	Code   int64       `description:"错误编码" json:"code"`
@@ -106,4 +118,24 @@ func (ctl *RestController) Page(page *db.PageObj) {
 //错误日志
 func (ctl *RestController) LogError(format string, args ...interface{}) {
 	log.Error(format, args...)
+}
+
+type extFloat64 struct {
+	jsoniter.DummyExtension
+}
+
+func (e *extFloat64) DecorateEncoder(typ reflect2.Type, encoder jsoniter.ValEncoder) jsoniter.ValEncoder {
+	if typ.String() == "float64" {
+		return e
+	}
+	return encoder
+}
+
+func (*extFloat64) Encode(ptr unsafe.Pointer, stream *jsoniter.Stream) {
+	f := *((*float64)(ptr))
+	stream.WriteRaw(fmt.Sprintf("%.3f", f))
+}
+
+func (*extFloat64) IsEmpty(ptr unsafe.Pointer) bool {
+	return *((*float64)(ptr)) == 0
 }

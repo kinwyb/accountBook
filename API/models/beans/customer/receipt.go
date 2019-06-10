@@ -11,7 +11,16 @@ type ReceiptListReq struct {
 }
 
 type ReceiptListResp struct {
-	Data []*Receipt `description:"数据集合"`
+	Data   []*Receipt      `description:"数据集合"`
+	Counts []*ReceiptCount `description:"统计数据"`
+}
+
+type ReceiptCount struct {
+	MoneyType  string  `description:"货币类型"`
+	AllIn      float64 `description:"总收入"`
+	AllOut     float64 `description:"总支出"`
+	StartMoney float64 `description:"期初金额"`
+	EndMoney   float64 `description:"期末金额"`
 }
 
 type Receipt struct {

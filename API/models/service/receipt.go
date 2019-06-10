@@ -7,6 +7,9 @@ import (
 	"accountBook/models/dataBase"
 	"fmt"
 	"strings"
+	"time"
+
+	heldiamgo "github.com/kinwyb/go"
 
 	"github.com/kinwyb/go/err1"
 
@@ -85,13 +88,78 @@ func ReceiptList(req *customer.ReceiptListReq, pg *db.PageObj, ctx *beans.Contex
 			Shop:        shopValue,
 		})
 	}
+	// 计算汇总数据
+	if pg.Page < 2 {
+		ret.Counts = receiptListCount(req, ctx.Child())
+	}
 	return ret
+}
+
+// 计算汇总数据
+func receiptListCount(req *customer.ReceiptListReq, ctx *beans.Context) []*customer.ReceiptCount {
+	defer ctx.Start("sev.receiptListCount").Finish()
+	//银行期初
+	startCNY := 0.0
+	startUSD := 0.0
+	banks := dataBase.BankList(ctx.Child())
+	for _, v := range banks {
+		startCNY = startCNY + v.BankMoney
+		startUSD = startUSD + v.BankMoneyUsa
+	}
+	// 流水金额
+	startData := map[string]float64{}
+	endData := map[string]float64{}
+	if req.StartTime != "" {
+		result := dataBase.ReceiptEndTimeMoneyCount(req.StartTime, true, ctx.Child())
+		for _, v := range result {
+			key := fmt.Sprintf("%d", v.MoneyType)
+			if v.Money < 0 {
+				key = key + "Out"
+			} else {
+				key = key + "In"
+			}
+			startData[key] = startData[key] + v.Money
+		}
+	}
+	if req.EndTime == "" {
+		req.EndTime = time.Now().Format(heldiamgo.DateTimeFormat)
+	}
+	result := dataBase.ReceiptEndTimeMoneyCount(req.EndTime, true, ctx.Child())
+	for _, v := range result {
+		key := fmt.Sprintf("%d", v.MoneyType)
+		if v.Money < 0 {
+			key = key + "Out"
+		} else {
+			key = key + "In"
+		}
+		endData[key] = endData[key] + v.Money
+	}
+	// 汇总人民币
+	rmb := &customer.ReceiptCount{
+		MoneyType:  "人民币",
+		AllIn:      endData[fmt.Sprintf("%dIn", beans.CNY)] - startData[fmt.Sprintf("%dIn", beans.CNY)],
+		AllOut:     endData[fmt.Sprintf("%dOut", beans.CNY)] - startData[fmt.Sprintf("%dOut", beans.CNY)],
+		StartMoney: startData[fmt.Sprintf("%dIn", beans.CNY)] + startData[fmt.Sprintf("%dOut", beans.CNY)],
+		EndMoney:   endData[fmt.Sprintf("%dIn", beans.CNY)] + endData[fmt.Sprintf("%dOut", beans.CNY)],
+	}
+	rmb.EndMoney = rmb.EndMoney + startCNY
+	rmb.StartMoney = rmb.StartMoney + startCNY
+	usd := &customer.ReceiptCount{
+		MoneyType:  "人民币",
+		AllIn:      endData[fmt.Sprintf("%dIn", beans.USD)] - startData[fmt.Sprintf("%dIn", beans.USD)],
+		AllOut:     endData[fmt.Sprintf("%dOut", beans.USD)] - startData[fmt.Sprintf("%dOut", beans.USD)],
+		StartMoney: startData[fmt.Sprintf("%dIn", beans.USD)] + startData[fmt.Sprintf("%dOut", beans.USD)],
+		EndMoney:   endData[fmt.Sprintf("%dIn", beans.USD)] + endData[fmt.Sprintf("%dOut", beans.USD)],
+	}
+	usd.EndMoney = usd.EndMoney + startUSD
+	usd.StartMoney = usd.StartMoney + startUSD
+	return []*customer.ReceiptCount{rmb, usd}
 }
 
 // 时间范围内容金额统计
 func ReceiptEndTimeMoneyCount(endTime string, ctx *beans.Context) []*dbBeans.Receipt {
 	defer ctx.Start("sev.ReceiptTimeRangeMoneyCount").Finish()
-	return dataBase.ReceiptEndTimeMoneyCount(endTime, ctx.Child())
+	return dataBase.ReceiptEndTimeMoneyCount(endTime, false, ctx.Child())
 }
 
 // 下一个

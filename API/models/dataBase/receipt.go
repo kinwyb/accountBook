@@ -46,19 +46,24 @@ func ReceiptList(req *customer.ReceiptListReq, pg *db.PageObj, ctx *beans.Contex
 }
 
 // 时间范围内容金额统计
-func ReceiptEndTimeMoneyCount(endTime string, ctx *beans.Context) []*dbBeans.Receipt {
+func ReceiptEndTimeMoneyCount(endTime string, disInOut bool, ctx *beans.Context) []*dbBeans.Receipt {
 	defer ctx.Start("db.ReceiptTimeRangeMoneyCount").Finish()
 	sqlString := strings.Builder{}
 	sqlString.WriteString("SELECT ")
 	sqlString.WriteString("`id`,SUM(money) money,`bank_id`,`description`,`createtime`,`lastmodify`,`operator`,`type`,`money_type`")
 	sqlString.WriteString(" FROM ")
 	sqlString.WriteString(dbBeans.TableReceipt)
+	sqlString.WriteString(" WHERE 1=1 ")
 	var args []interface{}
 	if endTime != "" {
-		sqlString.WriteString(" WHERE createtime <= ? ")
+		sqlString.WriteString(" AND createtime <= ? ")
 		args = append(args, endTime)
 	}
-	sqlString.WriteString(" GROUP BY bank_id,money_type ")
+	sqlString.WriteString(" GROUP BY ")
+	if disInOut {
+		sqlString.WriteString(" sign(money),")
+	}
+	sqlString.WriteString(" bank_id,money_type ")
 	var ret []*dbBeans.Receipt
 	ctx.Query.QueryRows(sqlString.String(), args...).ForEach(func(m map[string]interface{}) bool {
 		r := &dbBeans.Receipt{}
