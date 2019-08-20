@@ -18,7 +18,7 @@ import (
 //  `money_type` tinyint(3) unsigned NOT NULL DEFAULT '2',
 //  PRIMARY KEY (`id`),
 //  KEY `type_bank_time` (`bank_id`,`createtime`,`type`) USING BTREE
-//) ENGINE=InnoDB AUTO_INCREMENT=755 DEFAULT CHARSET=utf8 COMMENT='收入支出单据'
+//) ENGINE=InnoDB AUTO_INCREMENT=1526 DEFAULT CHARSET=utf8 COMMENT='收入支出单据'
 const TableReceipt = "receipt"
 const ReceiptColumns = "`id`,`money`,`bank_id`,`description`,`createtime`,`lastmodify`,`operator`,`type`,`money_type`"
 

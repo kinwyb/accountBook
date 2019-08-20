@@ -2,6 +2,7 @@ package config
 
 import (
 	"accountBook/models/beans"
+	"accountBook/models/log"
 	"fmt"
 	"net"
 	"net/http"
@@ -21,7 +22,7 @@ func startAppdashServer(appdashPort int) {
 	// Listen on any available TCP port locally.
 	l, err := net.ListenTCP("tcp", &net.TCPAddr{IP: net.IPv4(127, 0, 0, 1), Port: 0})
 	if err != nil {
-		log.Error("%s", err)
+		log.Error(log.ServiceTag, "%s", err)
 	}
 	collectorPort := l.Addr().(*net.TCPAddr).Port
 
@@ -34,19 +35,19 @@ func startAppdashServer(appdashPort int) {
 	appdashURLStr := fmt.Sprintf("http://localhost:%d", appdashPort)
 	appdashURL, err := url.Parse(appdashURLStr)
 	if err != nil {
-		log.Error("Error parsing %s: %s", appdashURLStr, err)
+		log.Error(log.ServiceTag, "Error parsing %s: %s", appdashURLStr, err)
 	}
 	fmt.Printf("To see your traces, go to %s/traces\n", appdashURL)
 
 	// Start the web UI in a separate goroutine.
 	tapp, err := traceapp.New(nil, appdashURL)
 	if err != nil {
-		log.Error("Error creating traceapp: %v", err)
+		log.Error(log.ServiceTag, "Error creating traceapp: %v", err)
 	}
 	tapp.Store = store
 	tapp.Queryer = store
 	go func() {
-		log.Error("%s", http.ListenAndServe(fmt.Sprintf(":%d", appdashPort), tapp))
+		log.Error(log.ServiceTag, "%s", http.ListenAndServe(fmt.Sprintf(":%d", appdashPort), tapp))
 	}()
 
 	tracer := appdashot.NewTracer(appdash.NewRemoteCollector(fmt.Sprintf(":%d", collectorPort)))
@@ -56,7 +57,7 @@ func startAppdashServer(appdashPort int) {
 func startZipkinServer(zipkinURL string) {
 	collector, err := zipkin.NewHTTPCollector(zipkinURL, zipkin.HTTPTimeout(1*time.Minute))
 	if err != nil {
-		log.Error("unable to create Zipkin HTTP collector: %+v\n", err)
+		log.Error(log.ServiceTag, "unable to create Zipkin HTTP collector: %+v\n", err)
 		beans.Tracing = false
 		return
 	}
@@ -71,7 +72,7 @@ func startZipkinServer(zipkinURL string) {
 		zipkin.TraceID128Bit(true),
 	)
 	if err != nil {
-		log.Error("unable to create Zipkin tracer: %+v\n", err)
+		log.Error(log.ServiceTag, "unable to create Zipkin tracer: %+v\n", err)
 		beans.Tracing = false
 		return
 	}

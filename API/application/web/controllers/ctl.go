@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"accountBook/models/beans"
+	"accountBook/models/log"
 	"fmt"
 	"time"
 	"unsafe"
@@ -117,7 +118,7 @@ func (ctl *RestController) Page(page *db.PageObj) {
 
 //错误日志
 func (ctl *RestController) LogError(format string, args ...interface{}) {
-	log.Error(format, args...)
+	log.Error(log.ServiceTag, format, args...)
 }
 
 type extFloat64 struct {

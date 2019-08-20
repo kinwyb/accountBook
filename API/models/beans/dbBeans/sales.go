@@ -25,7 +25,7 @@ import (
 //  `inputTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
 //  `passTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '审核时间',
 //  PRIMARY KEY (`id`,`order_id`)
-//) ENGINE=InnoDB AUTO_INCREMENT=106 DEFAULT CHARSET=utf8 COMMENT='销售单'
+//) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='销售单'
 const TableSales = "sales"
 const SalesColumns = "`id`,`area`,`order_id`,`createtime`,`customer`,`money_usa`,`money`,`sales`,`status`,`finish_status`,`description`,`profit`,`gd`,`mlv`,`hv`,`inputTime`,`passTime`"
 

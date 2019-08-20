@@ -21,7 +21,7 @@ type bankEp struct{}
 
 func (bankEp) Add(req *dbBeans.BankDB, ctx *beans.Context) err1.Error {
 	defer ctx.Start("ep.BankAdd").Finish()
-	if err := endpoints.CheckPower("BankAdd", ctx.Child()); err != nil {
+	if err := endpoints.CheckPower("Bank.Add", ctx.Child()); err != nil {
 		return err
 	}
 	return service.BankAdd(req, ctx.Child())

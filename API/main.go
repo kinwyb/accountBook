@@ -3,8 +3,8 @@ package main
 import (
 	"accountBook/application/web/controllers"
 	_ "accountBook/application/web/routers"
-	"accountBook/models/beans"
 	"accountBook/models/config"
+	"accountBook/models/log"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
@@ -18,7 +18,7 @@ func main() {
 	if beego.BConfig.RunMode != "dev" {
 		logpath := beego.AppConfig.DefaultString("log.path", "")
 		//设置日志
-		beans.SetLogPath(logpath)
+		log.SetLogPath(logpath)
 		beego.BeeLogger.Reset()
 		beego.BConfig.Log.AccessLogs = true
 		//beego.BConfig.Log.AccessLogsFormat = "JSON_FORMAT"

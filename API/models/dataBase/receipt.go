@@ -46,7 +46,7 @@ func ReceiptList(req *customer.ReceiptListReq, pg *db.PageObj, ctx *beans.Contex
 }
 
 // 时间范围内容金额统计
-func ReceiptEndTimeMoneyCount(endTime string, disInOut bool, ctx *beans.Context) []*dbBeans.Receipt {
+func ReceiptEndTimeMoneyCount(endTime string, bankID int64, disInOut bool, ctx *beans.Context) []*dbBeans.Receipt {
 	defer ctx.Start("db.ReceiptTimeRangeMoneyCount").Finish()
 	sqlString := strings.Builder{}
 	sqlString.WriteString("SELECT ")
@@ -58,6 +58,10 @@ func ReceiptEndTimeMoneyCount(endTime string, disInOut bool, ctx *beans.Context)
 	if endTime != "" {
 		sqlString.WriteString(" AND createtime <= ? ")
 		args = append(args, endTime)
+	}
+	if bankID > 0 {
+		sqlString.WriteString(" AND bank_id = ? ")
+		args = append(args, bankID)
 	}
 	sqlString.WriteString(" GROUP BY ")
 	if disInOut {

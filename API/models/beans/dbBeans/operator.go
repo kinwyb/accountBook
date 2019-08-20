@@ -9,28 +9,24 @@ import (
 //CREATE TABLE `operator` (
 //  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '用户ID',
 //  `name` varchar(255) NOT NULL COMMENT '使用者名称',
-//  `password` char(32) NOT NULL DEFAULT 'N' COMMENT '密码',
 //  PRIMARY KEY (`id`)
 //) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='帐号'
 const TableOperator = "operator"
-const OperatorColumns = "`id`,`name`,`password`"
+const OperatorColumns = "`id`,`name`"
 
 type OperatorDB struct {
-	Id       int64  `description:"用户ID" db:"id" primary:"true"`
-	Name     string `description:"使用者名称" db:"name"`
-	Password string `description:"密码" db:"password"`
+	Id   int64  `description:"用户ID" db:"id" primary:"true"`
+	Name string `description:"使用者名称" db:"name"`
 }
 type Operator struct {
-	Id       int64  `description:"用户ID" db:"id" primary:"true"`
-	Name     string `description:"使用者名称" db:"name"`
-	Password string `description:"密码" db:"password"`
+	Id   int64  `description:"用户ID" db:"id" primary:"true"`
+	Name string `description:"使用者名称" db:"name"`
 }
 
 //Operator数据转换
 func (o *Operator) SetMapValue(m map[string]interface{}) {
 	o.Id = db.Int64Default(m["id"])
 	o.Name = db.StringDefault(m["name"])
-	o.Password = db.StringDefault(m["password"])
 }
 
 //Operator单个查询

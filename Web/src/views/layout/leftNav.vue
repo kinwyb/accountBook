@@ -17,6 +17,7 @@
         <template slot="title"><i class="el-icon-menu"></i>系统设置</template>
         <el-menu-item index="/system/bank">银行</el-menu-item>
         <el-menu-item index="/system/receiptType">收支类型</el-menu-item>
+        <el-menu-item index="/system/logList">日志</el-menu-item>
       </el-submenu>
     </el-menu>
 </el-aside>

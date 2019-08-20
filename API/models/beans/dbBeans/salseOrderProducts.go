@@ -19,7 +19,7 @@ import (
 //  `desc` text NOT NULL,
 //  PRIMARY KEY (`id`),
 //  KEY `order_id` (`order_id`)
-//) ENGINE=InnoDB AUTO_INCREMENT=507 DEFAULT CHARSET=utf8 COMMENT='销售订单产品'
+//) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='销售订单产品'
 const TableSalseOrderProducts = "salse_order_products"
 const SalseOrderProductsColumns = "`order_id`,`product_id`,`id`,`nums`,`price`,`fregiht`,`other`,`cost`,`amount`,`desc`"
 

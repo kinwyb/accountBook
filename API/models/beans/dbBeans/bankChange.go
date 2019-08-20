@@ -18,7 +18,7 @@ import (
 //  `desc` text COMMENT '备注',
 //  `money_type` tinyint(3) unsigned NOT NULL DEFAULT '2',
 //  PRIMARY KEY (`id`)
-//) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8 COMMENT='银行转账ID'
+//) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8 COMMENT='银行转账ID'
 const TableBankChange = "bank_change"
 const BankChangeColumns = "`id`,`out_bank_id`,`in_bank_id`,`in_receipt`,`out_receipt`,`createtime`,`opter`,`money`,`desc`,`money_type`"
 

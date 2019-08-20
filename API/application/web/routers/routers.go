@@ -42,6 +42,11 @@ func webRouter() {
 	beego.Router("/v1/web/receipt/list", receipt, "POST:List")
 	beego.Router("/v1/web/receipt/add", receipt, "POST:Add")
 	beego.Router("/v1/web/receipt/nextNo", receipt, "GET:NextNo")
+	// 系统
+	system := &web.SystemController{
+		Serv: module.System,
+	}
+	beego.Router("/v1/web/system/logList", system, "POST:LogList")
 }
 
 //首页控制器

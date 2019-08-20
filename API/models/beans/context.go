@@ -21,10 +21,11 @@ type IContext interface {
 
 //上下文
 type Context struct {
-	tracing     TracingSpan //追踪数据
-	tracingType int         //追踪类型[1=ChildOf,2=FollowsFrom]
-	Token       string      //token
-	Query       db.Query    //数据库连接
+	tracing     TracingSpan   //追踪数据
+	tracingType int           //追踪类型[1=ChildOf,2=FollowsFrom]
+	Token       string        //token
+	Query       db.Query      //数据库连接
+	RequestArgs []interface{} //请求参数
 }
 
 //ChildOf

@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"accountBook/models/beans"
+	"accountBook/models/log"
 	"context"
 	"fmt"
 	"net"
@@ -49,7 +50,7 @@ func StartMetrics() {
 func runInfo(r metrics.Registry, d time.Duration, ctx context.Context) {
 	ps, err := process.Processes()
 	if err != nil {
-		log.Error("运行数据获取失败:%s", err.Error())
+		log.Error(log.ServiceTag, "运行数据获取失败:%s", err.Error())
 		return
 	}
 	var proc *process.Process
@@ -62,17 +63,17 @@ func runInfo(r metrics.Registry, d time.Duration, ctx context.Context) {
 		}
 	}
 	if proc == nil {
-		log.Error("运行进程ID获取失败")
+		log.Error(log.ServiceTag, "运行进程ID获取失败")
 		return
 	}
-	log.Info("获取到运行进程ID:%d", proc.Pid)
+	log.Info(log.ServiceTag, "获取到运行进程ID:%d", proc.Pid)
 	memRSS := metrics.NewGauge()
 	memVMS := metrics.NewGauge()
 	r.Register("process.Mem.RSS", memRSS)
 	r.Register("process.Mem.VMS", memVMS)
 	infs, err := net.Interfaces()
 	if err != nil {
-		log.Error("系统网络获取失败")
+		log.Error(log.ServiceTag, "系统网络获取失败")
 	}
 	netRecvGauge := map[string]metrics.Gauge{}
 	netSentGauge := map[string]metrics.Gauge{}
@@ -96,7 +97,7 @@ func runInfo(r metrics.Registry, d time.Duration, ctx context.Context) {
 			//内存
 			mem, err := proc.MemoryInfo()
 			if err != nil {
-				log.Error("进程运行内存获取失败:%s", err.Error())
+				log.Error(log.ServiceTag, "进程运行内存获取失败:%s", err.Error())
 			} else {
 				memRSS.Update(int64(mem.RSS))
 				memVMS.Update(int64(mem.VMS))

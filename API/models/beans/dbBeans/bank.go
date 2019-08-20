@@ -17,7 +17,7 @@ import (
 //  `bank_money_usa` decimal(20,3) NOT NULL DEFAULT '0.000',
 //  PRIMARY KEY (`id`),
 //  KEY `type` (`bank_type`)
-//) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 COMMENT='银行数据'
+//) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8 COMMENT='银行数据'
 const TableBank = "bank"
 const BankColumns = "`id`,`bank_name`,`bank_type`,`bank_account`,`bank_people`,`bank_phone`,`bank_money`,`bank_money_usa`"
 
@@ -29,7 +29,7 @@ type BankDB struct {
 	BankPeople   string  `description:"联系人" db:"bank_people"`
 	BankPhone    string  `description:"联系电话" db:"bank_phone"`
 	BankMoney    float64 `description:"初期余额" db:"bank_money"`
-	BankMoneyUsa float64 `description:"初期美元余额" db:"bank_money_usa"`
+	BankMoneyUsa float64 `description:"" db:"bank_money_usa"`
 }
 type Bank struct {
 	Id           int64   `description:"银行ID" db:"id" primary:"true"`
@@ -39,7 +39,7 @@ type Bank struct {
 	BankPeople   string  `description:"联系人" db:"bank_people"`
 	BankPhone    string  `description:"联系电话" db:"bank_phone"`
 	BankMoney    float64 `description:"初期余额" db:"bank_money"`
-	BankMoneyUsa float64 `description:"初期美元余额" db:"bank_money_usa"`
+	BankMoneyUsa float64 `description:"" db:"bank_money_usa"`
 }
 
 //Bank数据转换

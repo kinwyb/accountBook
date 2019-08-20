@@ -11,7 +11,7 @@ import (
 //  `name` varchar(255) NOT NULL COMMENT '名称',
 //  `parent_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '父级ID',
 //  PRIMARY KEY (`id`,`name`)
-//) ENGINE=InnoDB AUTO_INCREMENT=121 DEFAULT CHARSET=utf8 COMMENT='单据类型'
+//) ENGINE=InnoDB AUTO_INCREMENT=184 DEFAULT CHARSET=utf8 COMMENT='单据类型'
 const TableReceiptType = "receipt_type"
 const ReceiptTypeColumns = "`id`,`name`,`parent_id`"
 

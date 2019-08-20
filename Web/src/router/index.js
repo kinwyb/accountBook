@@ -54,6 +54,10 @@ export default new Router({
         path: 'receiptType',
         name: '银行列表',
         component: _import('receiptType/list')
+      }, {
+        path: 'logList',
+        name: '日志',
+        component: _import('system/logList')
       }]
     }
   ]

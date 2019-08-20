@@ -1,6 +1,7 @@
 package beans
 
 import (
+	"accountBook/models/log"
 	"context"
 	"encoding/json"
 	"net/http"
@@ -183,7 +184,7 @@ func NewTracingSpanExtractTextMap(operationName string, spanMapJson string) Trac
 		opentracing.TextMap,
 		opentracing.TextMapCarrier(textMap))
 	if err != nil {
-		log.Error("追踪解析错误:%s\n", err.Error())
+		log.Error(log.ServiceTag, "追踪解析错误:%s\n", err.Error())
 	}
 	ret.Start(operationName)
 	return ret
